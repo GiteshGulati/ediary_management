@@ -238,3 +238,28 @@ def changePassword(request):
 def Logout(request):
     logout(request)
     return redirect('index')
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def api_get_notes(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'unauthorized'}, status=401)
+    
+    user = User.objects.get(id=request.user.id)
+    signup = Signup.objects.get(user=user)
+    category = Category.objects.filter(signup=signup)
+    notes = Notes.objects.filter(Q(category__in=category))
+    
+    notes_data = [{
+        'id': note.id,
+        'title': note.noteTitle,
+        'description': note.noteDescription,
+        'category': note.category.categoryName,
+        'created_at': note.CreationDate,
+        'user': note.signup.user.username
+    } for note in notes]
+    
+    return JsonResponse({'notes': notes_data})

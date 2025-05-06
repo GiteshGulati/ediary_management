@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path
 from eDiary.views import *
@@ -23,5 +22,5 @@ urlpatterns = [
     path('profile', profile, name='profile'),
     path('changePassword', changePassword, name='changePassword'),
     path('logout/', Logout, name='logout'),
-
-]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/notes/', api_get_notes, name='api_get_notes'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
